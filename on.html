@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Informasi & Pedoman Kearsipan Terpadu - KOYK Enterprise</title>
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome (CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
+
+    <!-- Logic Script (Data & State Management) -->
+    <script>
+        function portalApp() {
+            return {
+                loading: true,
+                mobileMenu: false,
+                glosariumModal: false, // Default hidden
+                activeTab: 'penciptaan',
+                activeFlow: 'pemindahan',
+                searchQuery: '',
+                
+                // Init Animation
+                init() {
+                    setTimeout(() => { this.loading = false; }, 2500);
+                },
+
+                // DATABASE GLOSARIUM LENGKAP (39 ISTILAH SEDK)
+                definitions: [
+                    { id: 1, term: 'Arsip Otoritas Jasa Keuangan (Arsip)', def: 'Rekaman kegiatan atau peristiwa dalam berbagai bentuk dan media sesuai dengan perkembangan teknologi informasi dan komunikasi yang dibuat dan diterima oleh Otoritas Jasa Keuangan dalam rangka pelaksanaan tugas, fungsi, dan wewenang Otoritas Jasa Keuangan.' },
+                    { id: 2, term: 'Satuan Kerja', def: 'Satuan Kerja sebagaimana dimaksud dalam Peraturan Dewan Komisioner Otoritas Jasa Keuangan tentang Organisasi Otoritas Jasa Keuangan.' },
+                    { id: 3, term: 'Unit Kerja', def: 'Unit Kerja sebagaimana dimaksud dalam Peraturan Dewan Komisioner Otoritas Jasa Keuangan tentang Organisasi Otoritas Jasa Keuangan.' },
+                    { id: 4, term: 'Kearsipan', def: 'Hal-hal yang berkenaan dengan Arsip.' },
+                    { id: 5, term: 'Penyelenggaraan Kearsipan', def: 'Keseluruhan kegiatan meliputi kebijakan, Pembinaan Kearsipan, dan pengelolaan Arsip dalam sistem Kearsipan Otoritas Jasa Keuangan, yang didukung oleh sumber daya manusia, prasarana dan sarana, serta sumber daya lainnya.' },
+                    { id: 6, term: 'Arsip Dinamis', def: 'Arsip yang digunakan secara langsung dalam kegiatan Otoritas Jasa Keuangan dan disimpan selama jangka waktu tertentu.' },
+                    { id: 7, term: 'Arsip Aktif', def: 'Arsip yang frekuensi penggunaannya tinggi dan/atau terus menerus.' },
+                    { id: 8, term: 'Arsip Inaktif', def: 'Arsip yang frekuensi penggunaannya telah menurun.' },
+                    { id: 9, term: 'Arsip Vital', def: 'Arsip Aktif dan Arsip Inaktif yang keberadaannya merupakan persyaratan dasar bagi kelangsungan operasional Otoritas Jasa Keuangan, tidak dapat diperbarui, dan tidak tergantikan apabila rusak atau hilang.' },
+                    { id: 10, term: 'Arsip Statis', def: 'Arsip yang dihasilkan oleh Otoritas Jasa Keuangan, karena memiliki nilai guna kesejarahan, telah habis retensinya, dan berketerangan dipermanenkan yang telah diverifikasi baik secara langsung maupun tidak langsung oleh Arsip Nasional Republik Indonesia.' },
+                    { id: 11, term: 'Arsip Konvensional', def: 'Arsip yang informasinya terekam dalam media kertas.' },
+                    { id: 12, term: 'Arsip Elektronik', def: 'Arsip yang dibuat dan diterima dalam format elektronik atau Arsip hasil dari alih media.' },
+                    { id: 13, term: 'Arsip Audio Visual', def: 'Arsip yang direkam dalam media foto, film/microfilm, video dan lain-lain.' },
+                    { id: 14, term: 'Pencipta Arsip', def: 'Satuan Kerja dan Unit Kerja di Kantor Pusat, Kantor Regional, dan kantor Otoritas Jasa Keuangan yang mempunyai kemandirian dan kewenangan dalam pelaksanaan fungsi, tugas dan tanggung jawab di bidang Pengelolaan Arsip Dinamis.' },
+                    { id: 15, term: 'Pengelola Arsip', def: 'Pegawai Otoritas Jasa Keuangan dengan level jabatan setingkat staf ke bawah yang bertugas melakukan pengelolaan Kearsipan.' },
+                    { id: 16, term: 'Arsiparis', def: 'Pegawai Otoritas Jasa Keuangan yang memiliki kompetensi di bidang Kearsipan yang diperoleh melalui pendidikan formal dan/atau pendidikan dan pelatihan Kearsipan serta mempunyai fungsi, tugas, dan tanggung jawab melakukan pengelolaan Arsip di lingkungan Otoritas Jasa Keuangan.' },
+                    { id: 17, term: 'Unit Kearsipan', def: 'Unit Kerja pada Pencipta Arsip yang mempunyai tugas dan tanggung jawab dalam Penyelenggaraan Kearsipan.' },
+                    { id: 18, term: 'Unit Pengolah', def: 'Seluruh Satuan Kerja dan Unit Kerja di Kantor Pusat, Kantor Regional, dan Kantor Otoritas Jasa Keuangan yang mempunyai tugas dan tanggung jawab mengolah semua Arsip Aktif sebagai berkas kerja yang berkaitan dengan pelaksanaan kegiatan di lingkungannya.' },
+                    { id: 19, term: 'Klasifikasi Arsip', def: 'Pengelompokkan masalah-masalah secara sistematis dan berjenjang dengan tanda-tanda atau kode khusus yang berfungsi sebagai dasar bagi penataan berkas (titel) secara sistematis dan efektif.' },
+                    { id: 20, term: 'Akses Arsip', def: 'Ketersediaan Arsip sebagai hasil dari kewenangan hukum dan otorisasi legal serta keberadaan sarana bantu untuk mempermudah penemuan dan pemanfaatan Arsip.' },
+                    { id: 21, term: 'Klasifikasi Keamanan Arsip Dinamis', def: 'Pengkategorian/penggolongan Arsip Dinamis berdasarkan pada tingkat keseriusan dampak yang ditimbulkan terhadap kepentingan dan keamanan negara, publik, dan perorangan.' },
+                    { id: 22, term: 'Rahasia', def: 'Klasifikasi informasi dari Arsip yang apabila diketahui oleh pihak yang tidak berhak dapat mengakibatkan terganggunya fungsi penyelenggaraan negara, sumber daya nasional, dan/atau ketertiban umum.' },
+                    { id: 23, term: 'Terbatas', def: 'Klasifikasi informasi dari Arsip yang memiliki informasi yang apabila diketahui oleh pihak yang tidak berhak dapat mengakibatkan terganggunya pelaksanaan tugas dan fungsi Otoritas Jasa Keuangan.' },
+                    { id: 24, term: 'Biasa/Terbuka', def: 'Klasifikasi informasi dari Arsip yang memiliki informasi yang apabila diketahui oleh publik tidak merugikan siapapun.' },
+                    { id: 25, term: 'Jadwal Retensi Arsip (JRA)', def: 'Daftar yang berisi sekurang-kurangnya jangka waktu penyimpanan atau retensi, jenis Arsip, dan keterangan yang berisi rekomendasi tentang penetapan suatu jenis Arsip dimusnahkan, dinilai kembali, atau dipermanenkan yang dipergunakan sebagai pedoman penyusutan dan penyelamatan Arsip.' },
+                    { id: 26, term: 'Retensi Arsip', def: 'Jangka waktu simpan Arsip baik pada masa aktif maupun inaktif yang ditentukan berdasarkan frekuensi penggunaan dan Nilai Guna Arsip.' },
+                    { id: 27, term: 'Pembinaan', def: 'Upaya peningkatan kualitas pengelolaan Arsip di lingkungan Otoritas Jasa Keuangan.' },
+                    { id: 28, term: 'Pengawasan Kearsipan', def: 'Proses kegiatan dalam menilai kesesuaian antara prinsip, kaidah, dan standar Kearsipan dengan Penyelenggaraan Kearsipan.' },
+                    { id: 29, term: 'Pengelolaan Arsip Dinamis', def: 'Proses pengendalian Arsip Dinamis secara efisien, efektif, dan sistematis.' },
+                    { id: 30, term: 'Berkas', def: 'Himpunan Arsip yang disatukan karena memiliki keterkaitan dalam suatu konteks pelaksanaan kegiatan dan memiliki kesamaan jenis kegiatan/peristiwa dan/atau kesamaan masalah.' },
+                    { id: 31, term: 'Pemeliharaan', def: 'Kegiatan menjaga keutuhan, keamanan, dan keselamatan Arsip baik fisik maupun informasinya.' },
+                    { id: 32, term: 'Pemberkasan', def: 'Penempatan Arsip ke dalam suatu himpunan yang tersusun secara sistematis dan logis sesuai dengan konteks kegiatannya, sehingga menjadi satu Berkas karena memiliki hubungan informasi, kesamaan jenis, atau kesamaan masalah dari suatu Unit Kerja.' },
+                    { id: 33, term: 'Penggunaan', def: 'Kegiatan pemanfaatan dan penyediaan Arsip bagi kepentingan pengguna Arsip yang berhak.' },
+                    { id: 34, term: 'Penyusutan', def: 'Kegiatan pengurangan jumlah Arsip.' },
+                    { id: 35, term: 'Pemindahan', def: 'Kegiatan pemindahan Arsip Inaktif dari Unit Pengolah ke Unit Kearsipan.' },
+                    { id: 36, term: 'Pemusnahan', def: 'Kegiatan memusnahkan Arsip yang tidak mempunyai nilai kegunaan dan telah habis retensi sesuai dengan ketentuan peraturan perundang-undangan.' },
+                    { id: 37, term: 'Penyerahan Arsip Statis', def: 'Kegiatan menyerahkan Arsip Statis kepada Arsip Nasional Republik Indonesia.' },
+                    { id: 38, term: 'Alih Media', def: 'Kegiatan pengalihan media Arsip dari satu media ke media lainnya dalam rangka memudahkan akses Arsip.' },
+                    { id: 39, term: 'Sumber Daya Kearsipan', def: 'Sumber daya pendukung terhadap sistem Kearsipan, terdiri dari sumber daya manusia, prasarana dan sarana, organisasi Kearsipan, serta pendanaan.' }
+                ],
+                
+                get filteredDefinitions() {
+                    if (this.searchQuery === '') return this.definitions;
+                    return this.definitions.filter(item => 
+                        item.term.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
+                        item.def.toLowerCase().includes(this.searchQuery.toLowerCase())
+                    );
+                },
+
+                // Kalkulator Retensi Logic
+                retensiYear: '',
+                retensiResult: null,
+                calculateRetention() {
+                    const year = parseInt(this.retensiYear);
+                    const period = document.getElementById('retensiPeriod').value;
+                    if(!year) return;
+                    
+                    if(period === 'permanen') {
+                        this.retensiResult = { status: 'PERMANEN', desc: 'Arsip ini wajib dilestarikan selamanya. Diserahkan ke ANRI (Arsip Statis).' };
+                    } else if (period === 'dinilai') {
+                        this.retensiResult = { status: 'DINILAI KEMBALI', desc: 'Perlu assessment ulang oleh Panitia Penilai Arsip sebelum dimusnahkan.' };
+                    } else {
+                        const endYear = year + parseInt(period);
+                        this.retensiResult = { status: 'MUSNAH', desc: `Dapat diusulkan musnah pada tahun: ${endYear}` };
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Alpine.js (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    },
+                    colors: {
+                        ojkRed: '#C8102E', 
+                        ojkDark: '#111827',
+                        ojkGray: '#F9FAFB',
+                        ojkGold: '#D4AF37',
+                    },
+                    maxWidth: {
+                        '8xl': '88rem',
+                        '9xl': '96rem', 
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(0,0,0,0.05)',
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+                        'glow': '0 0 20px rgba(200, 16, 46, 0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .hero-bg {
+            background-color: #ffffff;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C8102E' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #C8102E; border-radius: 10px; border: 2px solid #f1f1f1; }
+        ::-webkit-scrollbar-thumb:hover { background: #a00d24; }
+        
+        /* Timeline styling */
+        .timeline-line::before {
+            content: ''; position: absolute; top: 0; bottom: 0; left: 24px; width: 3px; background: #e5e7eb; z-index: 0;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="font-sans text-gray-700 antialiased bg-white flex flex-col min-h-screen" x-data="portalApp()" x-cloak>
+
+    <!-- SPLASH SCREEN -->
+    <div x-show="loading" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center transition-opacity duration-700 ease-out" x-transition:leave="opacity-0">
+        <div class="relative mb-8">
+            <div class="w-32 h-32 bg-ojkRed rounded-[2rem] flex items-center justify-center shadow-2xl animate-bounce">
+                <span class="text-white font-extrabold text-4xl tracking-tighter">OJK</span>
+            </div>
+            <div class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 w-20 h-2 bg-gray-200 rounded-full blur-md opacity-50"></div>
+        </div>
+        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight mt-6 animate-pulse">Memuat Portal Kearsipan...</h1>
+        <p class="text-gray-500 font-medium text-sm mt-3 tracking-widest uppercase">Kantor OJK D.I. Yogyakarta</p>
+    </div>
+
+    <!-- GLOSARIUM MODAL (HIDDEN BY DEFAULT) -->
+    <div x-show="glosariumModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 transition-opacity bg-gray-900 bg-opacity-90 backdrop-blur-sm" @click="glosariumModal = false" x-transition.opacity></div>
+
+            <!-- Modal panel -->
+            <div class="inline-block w-full max-w-5xl my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-2xl rounded-[2rem]" x-transition.scale.origin.center>
+                <!-- Header -->
+                <div class="px-8 py-6 bg-gray-50 border-b border-gray-100 flex justify-between items-center sticky top-0 z-10">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900">Kamus Istilah Kearsipan</h3>
+                        <p class="text-sm text-gray-500 mt-1">Referensi 39 Definisi (SEDK.02/2022)</p>
+                    </div>
+                    <button @click="glosariumModal = false" class="text-gray-400 hover:text-ojkRed transition p-2 rounded-full hover:bg-red-50">
+                        <i class="fa-solid fa-xmark text-2xl"></i>
+                    </button>
+                </div>
+                
+                <!-- Search -->
+                <div class="px-8 py-6 bg-white border-b border-gray-100">
+                    <div class="relative">
+                        <i class="fa-solid fa-search absolute left-4 top-4 text-gray-400"></i>
+                        <input x-model="searchQuery" type="text" placeholder="Cari istilah (contoh: Arsip Vital, Unit Pengolah)..." class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-ojkRed/20 focus:border-ojkRed transition">
+                    </div>
+                </div>
+
+                <!-- Content List -->
+                <div class="px-8 py-6 max-h-[60vh] overflow-y-auto bg-gray-50">
+                    <div class="space-y-3">
+                        <template x-for="item in filteredDefinitions" :key="item.id">
+                            <div x-data="{ expanded: false }" class="bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-ojkRed/30 transition shadow-sm">
+                                <button @click="expanded = !expanded" class="w-full px-6 py-4 text-left flex justify-between items-center bg-white hover:bg-gray-50 transition">
+                                    <div class="flex items-center gap-4">
+                                        <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-gray-100 text-gray-500 text-xs font-bold flex items-center justify-center border border-gray-200" x-text="item.id"></span>
+                                        <span class="font-bold text-gray-800 text-base" x-text="item.term"></span>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-300" :class="{'rotate-180': expanded}"></i>
+                                </button>
+                                <div x-show="expanded" x-collapse class="bg-gray-50/50 border-t border-gray-100 px-6 py-5">
+                                    <p class="text-gray-700 text-sm font-serif leading-relaxed pl-12" x-text="item.def"></p>
+                                </div>
+                            </div>
+                        </template>
+                        <div x-show="filteredDefinitions.length === 0" class="text-center py-10 text-gray-400">
+                            Istilah tidak ditemukan.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="fixed w-full z-40 bg-white/95 backdrop-blur-lg border-b border-gray-200 transition-all duration-300">
+        <div class="max-w-[95%] mx-auto px-6">
+            <div class="flex justify-between h-24 items-center">
+                <!-- Logo -->
+                <div class="flex items-center gap-4 cursor-pointer group" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <div class="w-12 h-12 bg-ojkRed rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-lg group-hover:rotate-6 transition duration-300">
+                        OJK
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-bold text-xl text-gray-900 leading-none tracking-tight">Website Arsip</span>
+                        <span class="text-[10px] text-ojkRed font-extrabold tracking-[0.2em] uppercase mt-1">Kantor OJK Daerah Istimewa Yogyakarta</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Menu -->
+                <nav class="hidden lg:flex items-center gap-8">
+                    <a href="#tugas-fungsi" class="text-sm font-semibold text-gray-600 hover:text-ojkRed transition py-2 relative group">
+                        Organisasi
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-ojkRed transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="#panduan-teknis" class="text-sm font-semibold text-gray-600 hover:text-ojkRed transition py-2 relative group">
+                        Pedoman SEDK
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-ojkRed transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="#timeline-sop" class="text-sm font-semibold text-gray-600 hover:text-ojkRed transition py-2 relative group">
+                        Alur SOP
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-ojkRed transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="#pembenahan" class="text-sm font-semibold text-gray-600 hover:text-ojkRed transition py-2 relative group">
+                        Pembenahan
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-ojkRed transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <!-- Trigger Modal Glosarium -->
+                    <button @click="glosariumModal = true" class="text-sm font-semibold text-gray-600 hover:text-ojkRed transition py-2 flex items-center gap-2 group">
+                        <i class="fa-solid fa-book-bookmark text-gray-400 group-hover:text-ojkRed"></i> Kamus Istilah
+                    </button>
+                    <a href="#kit-template" class="px-6 py-3 bg-ojkDark text-white rounded-xl text-sm font-bold hover:bg-ojkRed transition shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-down"></i> Kit Formulir
+                    </a>
+                </nav>
+
+                <!-- Mobile Toggle -->
+                <button @click="mobileMenu = !mobileMenu" class="lg:hidden text-gray-600 hover:text-ojkRed transition p-2">
+                    <i class="fa-solid fa-bars-staggered text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div x-show="mobileMenu" x-collapse class="lg:hidden bg-white border-t border-gray-200 shadow-2xl">
+            <div class="flex flex-col p-8 space-y-6 font-bold text-gray-800 text-lg">
+                <a href="#tugas-fungsi" @click="mobileMenu=false" class="flex justify-between items-center">Struktur Organisasi <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i></a>
+                <a href="#panduan-teknis" @click="mobileMenu=false" class="flex justify-between items-center">Pedoman Teknis <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i></a>
+                <a href="#timeline-sop" @click="mobileMenu=false" class="flex justify-between items-center">Alur SOP <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i></a>
+                <button @click="glosariumModal=true; mobileMenu=false" class="flex justify-between items-center text-left w-full">Kamus Istilah <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i></button>
+                <a href="#kit-template" @click="mobileMenu=false" class="text-ojkRed">Unduh Formulir</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="relative pt-40 pb-32 overflow-hidden bg-white hero-bg">
+        <div class="max-w-screen-2xl mx-auto px-6 relative z-10 text-center">
+            <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-red-50 border border-red-100 text-ojkRed text-xs font-bold mb-10 uppercase tracking-widest shadow-sm hover:shadow-md transition cursor-default">
+                <span class="w-2.5 h-2.5 bg-ojkRed rounded-full animate-pulse"></span>
+                Implementasi SEDK.02 Tahun 2022
+            </div>
+            <h1 class="text-6xl md:text-8xl font-extrabold text-gray-900 mb-8 leading-tight tracking-tight">
+                Pusat Tata Kelola <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-br from-ojkRed to-red-900">Arsip Terintegrasi</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-500 mb-14 max-w-4xl mx-auto leading-relaxed font-light">
+                Platform referensi resmi bagi Insan OJK DIY. Menjamin ketersediaan arsip yang autentik dan terpercaya melalui prosedur <strong>Penciptaan, Penggunaan, Pemeliharaan,</strong> hingga <strong>Penyusutan</strong> yang terstandarisasi.
+            </p>
+            
+            <div class="flex flex-col md:flex-row justify-center gap-6">
+                <a href="#panduan-teknis" class="px-10 py-5 bg-ojkRed text-white font-bold rounded-2xl hover:bg-red-700 transition shadow-2xl hover:shadow-red-500/30 text-lg flex items-center justify-center gap-3 transform hover:-translate-y-1">
+                    <i class="fa-solid fa-book-open"></i> Pelajari Pedoman
+                </a>
+                <a href="#simulasi" class="px-10 py-5 bg-white border-2 border-gray-200 text-gray-800 font-bold rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition shadow-lg text-lg flex items-center justify-center gap-3 transform hover:-translate-y-1">
+                    <i class="fa-solid fa-calculator text-ojkRed"></i> Cek Retensi Arsip
+                </a>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto border-t border-gray-100 pt-10">
+                <div class="text-center">
+                    <p class="text-3xl font-bold text-gray-900">39</p>
+                    <p class="text-xs text-gray-500 uppercase tracking-wide mt-1">Istilah Kearsipan</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-3xl font-bold text-gray-900">4</p>
+                    <p class="text-xs text-gray-500 uppercase tracking-wide mt-1">Tahap Daur Hidup</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-3xl font-bold text-gray-900">3</p>
+                    <p class="text-xs text-gray-500 uppercase tracking-wide mt-1">Unit Kearsipan</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-3xl font-bold text-gray-900">100%</p>
+                    <p class="text-xs text-gray-500 uppercase tracking-wide mt-1">Kepatuhan Regulasi</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: ORGANISASI (ROLES) -->
+    <section id="tugas-fungsi" class="py-24 bg-gray-50 border-y border-gray-200 scroll-mt-24">
+        <div class="max-w-[90%] mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center mb-24">
+                <div>
+                    <span class="text-ojkRed font-bold tracking-widest text-sm uppercase mb-4 block">Bab IV: Organisasi</span>
+                    <h2 class="text-5xl font-bold text-gray-900 mb-8">Struktur & Tanggung Jawab</h2>
+                    <p class="text-gray-600 text-xl leading-relaxed mb-8 font-light">
+                        Penyelenggaraan kearsipan di OJK didukung oleh pembagian peran yang terstruktur antara Unit Pengolah (Pencipta) dan Unit Kearsipan (Pengelola) guna menjamin akuntabilitas.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg border border-blue-100 font-semibold text-sm">
+                            <i class="fa-solid fa-users"></i> Unit Pengolah (UP)
+                        </div>
+                        <div class="flex items-center gap-2 px-4 py-2 bg-red-50 text-ojkRed rounded-lg border border-red-100 font-semibold text-sm">
+                            <i class="fa-solid fa-archive"></i> Unit Kearsipan (UK)
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Diagram Visual -->
+                <div class="bg-gray-100 rounded-[2.5rem] h-96 w-full flex flex-col items-center justify-center border border-gray-200 shadow-inner relative overflow-hidden">
+                    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                    <div class="z-10 flex flex-col items-center gap-6">
+                        <div class="p-4 bg-white shadow-lg rounded-xl border border-gray-200 w-64 text-center">
+                            <span class="text-xs font-bold text-green-600">PUSAT</span>
+                            <h4 class="font-bold text-gray-900">Unit Kearsipan I</h4>
+                        </div>
+                        <div class="h-8 w-0.5 bg-gray-300"></div>
+                        <div class="flex gap-8">
+                            <div class="p-4 bg-white shadow-lg rounded-xl border-2 border-ojkRed w-56 text-center transform scale-110">
+                                <span class="text-xs font-bold text-ojkRed">DAERAH (KOJK)</span>
+                                <h4 class="font-bold text-gray-900">Unit Kearsipan III</h4>
+                            </div>
+                            <div class="p-4 bg-white shadow-lg rounded-xl border border-gray-200 w-56 text-center opacity-60">
+                                <span class="text-xs font-bold text-gray-500">PUSAT OPS</span>
+                                <h4 class="font-bold text-gray-900">Unit Kearsipan II</h4>
+                            </div>
+                        </div>
+                        <div class="h-8 w-0.5 bg-gray-300 mr-64"></div>
+                        <div class="p-4 bg-white shadow-lg rounded-xl border border-blue-200 w-64 text-center mr-64">
+                            <span class="text-xs font-bold text-blue-600">UNIT KERJA</span>
+                            <h4 class="font-bold text-gray-900">Unit Pengolah</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Roles -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- UP -->
+                <div class="bg-white p-10 rounded-[2rem] shadow-xl border-t-8 border-blue-600 hover:-translate-y-2 transition duration-300 relative group">
+                    <div class="mb-8">
+                        <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm group-hover:bg-blue-600 group-hover:text-white transition">
+                            <i class="fa-solid fa-pen-nib"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900">Unit Pengolah</h3>
+                        <p class="text-sm font-bold text-blue-600 uppercase tracking-wider mt-1">Pencipta Arsip</p>
+                    </div>
+                    <p class="text-gray-600 mb-8 text-sm leading-7">
+                        Satuan Kerja di KOJK (Bagian/Direktorat) yang bertugas menciptakan, menggunakan, dan memberkaskan arsip aktif.
+                    </p>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 text-sm text-gray-700 bg-gray-50 p-3 rounded-lg"><i class="fa-solid fa-check text-blue-500"></i> Membuat Naskah Dinas</div>
+                        <div class="flex items-center gap-3 text-sm text-gray-700 bg-gray-50 p-3 rounded-lg"><i class="fa-solid fa-check text-blue-500"></i> Memberkaskan Arsip Aktif</div>
+                        <div class="flex items-center gap-3 text-sm text-gray-700 bg-gray-50 p-3 rounded-lg"><i class="fa-solid fa-check text-blue-500"></i> Memindahkan ke UK</div>
+                    </div>
+                </div>
+
+                <!-- UK III -->
+                <div class="bg-gray-900 p-10 rounded-[2rem] shadow-2xl border-t-8 border-ojkRed hover:-translate-y-2 transition duration-300 relative transform scale-105 z-10">
+                    <div class="absolute top-6 right-6 bg-ojkRed text-white px-3 py-1 text-[10px] font-bold rounded-lg uppercase">Posisi Kita</div>
+                    <div class="mb-8">
+                        <div class="w-16 h-16 bg-gray-800 text-white rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm border border-gray-700">
+                            <i class="fa-solid fa-building-shield"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white">Unit Kearsipan III</h3>
+                        <p class="text-sm font-bold text-gray-400 uppercase tracking-wider mt-1">Pengelola (KOJK)</p>
+                    </div>
+                    <p class="text-gray-400 mb-8 text-sm leading-7">
+                        Fungsi logistik/umum di KOJK yang bertanggung jawab mengelola arsip inaktif dan memberikan layanan kearsipan.
+                    </p>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 text-sm text-gray-300 bg-gray-800 p-3 rounded-lg border border-gray-700"><i class="fa-solid fa-check text-ojkRed"></i> Kelola Record Center</div>
+                        <div class="flex items-center gap-3 text-sm text-gray-300 bg-gray-800 p-3 rounded-lg border border-gray-700"><i class="fa-solid fa-check text-ojkRed"></i> Layanan Peminjaman</div>
+                        <div class="flex items-center gap-3 text-sm text-gray-300 bg-gray-800 p-3 rounded-lg border border-gray-700"><i class="fa-solid fa-check text-ojkRed"></i> Pembinaan ke UP</div>
+                    </div>
+                </div>
+
+                <!-- UK I -->
+                <div class="bg-white p-10 rounded-[2rem] shadow-xl border-t-8 border-green-600 hover:-translate-y-2 transition duration-300 relative group">
+                    <div class="mb-8">
+                        <div class="w-16 h-16 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm group-hover:bg-green-600 group-hover:text-white transition">
+                            <i class="fa-solid fa-chess-king"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900">Unit Kearsipan I</h3>
+                        <p class="text-sm font-bold text-green-600 uppercase tracking-wider mt-1">Pusat (Kebijakan)</p>
+                    </div>
+                    <p class="text-gray-600 mb-8 text-sm leading-7">
+                        Departemen Logistik di Kantor Pusat yang menetapkan kebijakan nasional dan mengelola arsip statis (permanen).
+                    </p>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 text-sm text-gray-700 bg-gray-50 p-3 rounded-lg"><i class="fa-solid fa-check text-green-500"></i> Penetapan Kebijakan</div>
+                        <div class="flex items-center gap-3 text-sm text-gray-700 bg-gray-50 p-3 rounded-lg"><i class="fa-solid fa-check text-green-500"></i> Audit Kearsipan</div>
+                        <div class="flex items-center gap-3 text-sm text-gray-700 bg-gray-50 p-3 rounded-lg"><i class="fa-solid fa-check text-green-500"></i> Penyerahan ke ANRI</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: SIKLUS HIDUP ARSIP (TABBED CONTENT) -->
+    <section id="panduan-teknis" class="py-24 bg-white border-y border-gray-200 scroll-mt-24">
+        <div class="max-w-[90%] mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16">
+                <div class="max-w-2xl">
+                    <span class="text-ojkRed font-bold tracking-widest text-xs uppercase mb-2 block">Pedoman Teknis</span>
+                    <h2 class="text-4xl font-bold text-gray-900">Manajemen Arsip Dinamis</h2>
+                    <p class="mt-4 text-gray-600 text-lg">Panduan detail prosedur mulai dari penciptaan naskah dinas hingga penyusutan akhir.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <!-- Sidebar Navigation -->
+                <div class="lg:col-span-3 space-y-3">
+                    <button @click="activeTab = 'penciptaan'" :class="activeTab === 'penciptaan' ? 'bg-ojkRed text-white shadow-xl translate-x-2' : 'bg-white text-gray-600 hover:bg-gray-100'" class="w-full text-left px-8 py-5 rounded-2xl font-bold transition-all duration-300 flex justify-between items-center group">
+                        <span>1. Penciptaan</span>
+                        <i class="fa-solid fa-pen-nib opacity-50 group-hover:opacity-100"></i>
+                    </button>
+                    <button @click="activeTab = 'penggunaan'" :class="activeTab === 'penggunaan' ? 'bg-ojkRed text-white shadow-xl translate-x-2' : 'bg-white text-gray-600 hover:bg-gray-100'" class="w-full text-left px-8 py-5 rounded-2xl font-bold transition-all duration-300 flex justify-between items-center group">
+                        <span>2. Penggunaan</span>
+                        <i class="fa-solid fa-hand-holding opacity-50 group-hover:opacity-100"></i>
+                    </button>
+                    <button @click="activeTab = 'pemberkasan'" :class="activeTab === 'pemberkasan' ? 'bg-ojkRed text-white shadow-xl translate-x-2' : 'bg-white text-gray-600 hover:bg-gray-100'" class="w-full text-left px-8 py-5 rounded-2xl font-bold transition-all duration-300 flex justify-between items-center group">
+                        <span>3. Pemberkasan</span>
+                        <i class="fa-solid fa-folder-tree opacity-50 group-hover:opacity-100"></i>
+                    </button>
+                    <button @click="activeTab = 'alihmedia'" :class="activeTab === 'alihmedia' ? 'bg-ojkRed text-white shadow-xl translate-x-2' : 'bg-white text-gray-600 hover:bg-gray-100'" class="w-full text-left px-8 py-5 rounded-2xl font-bold transition-all duration-300 flex justify-between items-center group">
+                        <span>4. Alih Media</span>
+                        <i class="fa-solid fa-digital-ocean opacity-50 group-hover:opacity-100"></i>
+                    </button>
+                    <button @click="activeTab = 'penyusutan'" :class="activeTab === 'penyusutan' ? 'bg-ojkRed text-white shadow-xl translate-x-2' : 'bg-white text-gray-600 hover:bg-gray-100'" class="w-full text-left px-8 py-5 rounded-2xl font-bold transition-all duration-300 flex justify-between items-center group">
+                        <span>5. Penyusutan</span>
+                        <i class="fa-solid fa-trash-can opacity-50 group-hover:opacity-100"></i>
+                    </button>
+                </div>
+
+                <!-- Content Panel -->
+                <div class="lg:col-span-9 bg-white p-12 rounded-[2.5rem] border border-gray-200 shadow-2xl min-h-[600px] relative overflow-hidden">
+                    
+                    <!-- TAB 1: PENCIPTAAN -->
+                    <div x-show="activeTab === 'penciptaan'" x-transition.opacity.duration.500ms>
+                        <h3 class="text-3xl font-bold text-gray-900 border-b pb-6 mb-8">Penciptaan & Registrasi Arsip</h3>
+                        <div class="prose max-w-none text-gray-700 leading-relaxed">
+                            <p class="mb-8 text-lg">Penciptaan arsip meliputi pembuatan dan penerimaan naskah dinas. Setiap surat harus memenuhi syarat <strong>autentisitas, reliabilitas, integritas, dan kegunaan</strong>.</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div class="bg-blue-50 p-8 rounded-3xl border border-blue-100">
+                                    <h4 class="font-bold text-blue-900 text-xl mb-6 flex items-center gap-3"><div class="p-2 bg-white rounded-lg shadow-sm"><i class="fa-solid fa-envelope-open-text"></i></div> Surat Masuk</h4>
+                                    <ol class="list-decimal list-inside space-y-3 text-sm text-gray-700">
+                                        <li>Penerimaan oleh Unit Kearsipan/Tata Usaha.</li>
+                                        <li>Penyortiran (Dinas/Pribadi/Rahasia).</li>
+                                        <li>Pencatatan di <strong>Buku Agenda</strong> atau <strong>Kartu Kendali</strong>.</li>
+                                        <li>Pemberian Lembar Disposisi.</li>
+                                        <li>Distribusi ke Unit Pengolah.</li>
+                                    </ol>
+                                </div>
+                                <div class="bg-green-50 p-8 rounded-3xl border border-green-100">
+                                    <h4 class="font-bold text-green-900 text-xl mb-6 flex items-center gap-3"><div class="p-2 bg-white rounded-lg shadow-sm"><i class="fa-solid fa-paper-plane"></i></div> Surat Keluar</h4>
+                                    <ol class="list-decimal list-inside space-y-3 text-sm text-gray-700">
+                                        <li>Pembuatan Konsep (Drafting).</li>
+                                        <li>Persetujuan Berjenjang (Paraf).</li>
+                                        <li>Penomoran (Sesuai Klasifikasi Arsip).</li>
+                                        <li>Penandatanganan & Stempel.</li>
+                                        <li>Penyimpanan Arsip Pertinggal (Arsip).</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: PENGGUNAAN -->
+                    <div x-show="activeTab === 'penggunaan'" x-transition.opacity.duration.500ms style="display: none;">
+                        <h3 class="text-3xl font-bold text-gray-900 border-b pb-6 mb-8">Klasifikasi Keamanan & Akses</h3>
+                        <p class="mb-10 text-gray-600 text-lg">Akses arsip diberikan berdasarkan tingkat klasifikasi keamanan untuk melindungi informasi sensitif OJK.</p>
+                        
+                        <div class="grid gap-6">
+                            <div class="flex items-start gap-6 p-6 rounded-2xl bg-white border-l-8 border-red-600 shadow-sm hover:shadow-md transition">
+                                <div class="w-14 h-14 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center font-bold text-2xl shrink-0">R</div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-gray-900 mb-1">RAHASIA (Confidential)</h4>
+                                    <p class="text-sm text-gray-600 mb-3">Dapat membahayakan keamanan negara atau stabilitas sistem keuangan jika bocor.</p>
+                                    <span class="inline-block text-xs font-bold bg-red-100 text-red-800 px-3 py-1 rounded-full">Akses: Pimpinan & Petugas Khusus</span>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-6 p-6 rounded-2xl bg-white border-l-8 border-orange-500 shadow-sm hover:shadow-md transition">
+                                <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center font-bold text-2xl shrink-0">T</div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-gray-900 mb-1">TERBATAS (Restricted)</h4>
+                                    <p class="text-sm text-gray-600 mb-3">Dapat mengganggu pelaksanaan tugas OJK jika diketahui pihak tidak berhak. (Contoh: Laporan Pemeriksaan Bank).</p>
+                                    <span class="inline-block text-xs font-bold bg-orange-100 text-orange-800 px-3 py-1 rounded-full">Akses: Unit Pengolah Terkait</span>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-6 p-6 rounded-2xl bg-white border-l-8 border-green-500 shadow-sm hover:shadow-md transition">
+                                <div class="w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center font-bold text-2xl shrink-0">B</div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-gray-900 mb-1">BIASA / TERBUKA (Public)</h4>
+                                    <p class="text-sm text-gray-600 mb-3">Informasi publik yang tidak merugikan siapapun. (Contoh: Peraturan OJK, Siaran Pers).</p>
+                                    <span class="inline-block text-xs font-bold bg-green-100 text-green-800 px-3 py-1 rounded-full">Akses: Umum</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: PEMBERKASAN (Detailed) -->
+                    <div x-show="activeTab === 'pemberkasan'" x-transition.opacity.duration.500ms style="display: none;">
+                        <h3 class="text-3xl font-bold text-gray-900 border-b pb-6 mb-8">Pemberkasan Arsip Aktif</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+                            <div>
+                                <p class="text-gray-600 mb-8 text-lg leading-relaxed">
+                                    Pemberkasan adalah penempatan arsip ke dalam himpunan sistematis (Berkas) di Unit Pengolah agar mudah ditemukan kembali (Retrieval).
+                                </p>
+                                <ul class="space-y-8">
+                                    <li class="flex gap-6">
+                                        <span class="flex-shrink-0 w-10 h-10 rounded-full bg-ojkRed text-white flex items-center justify-center font-bold shadow-lg shadow-red-200">1</span>
+                                        <div>
+                                            <h5 class="font-bold text-gray-900 text-lg">Pemeriksaan (Inspecting)</h5>
+                                            <p class="text-sm text-gray-500 mt-2 leading-relaxed">Pastikan arsip sudah <i>closed file</i> (urusan selesai). Buang klip besi/staples yang dapat merusak kertas.</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex gap-6">
+                                        <span class="flex-shrink-0 w-10 h-10 rounded-full bg-ojkRed text-white flex items-center justify-center font-bold shadow-lg shadow-red-200">2</span>
+                                        <div>
+                                            <h5 class="font-bold text-gray-900 text-lg">Pengelompokan (Indexing)</h5>
+                                            <p class="text-sm text-gray-500 mt-2 leading-relaxed">Kelompokkan berdasarkan kesamaan masalah. Gunakan <strong>Kode Klasifikasi</strong> (Misal: KP.01).</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex gap-6">
+                                        <span class="flex-shrink-0 w-10 h-10 rounded-full bg-ojkRed text-white flex items-center justify-center font-bold shadow-lg shadow-red-200">3</span>
+                                        <div>
+                                            <h5 class="font-bold text-gray-900 text-lg">Pelabelan (Labeling)</h5>
+                                            <p class="text-sm text-gray-500 mt-2 leading-relaxed">Tulis Kode, Tahun, dan Indeks pada tab folder map gantung.</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="bg-gray-50 rounded-3xl flex flex-col items-center justify-center border border-gray-200 p-8 text-center relative overflow-hidden">
+                                <div class="absolute inset-0 bg-white opacity-50 pattern-grid-lg"></div>
+                                <div class="bg-white p-8 rounded-2xl shadow-xl mb-6 w-full max-w-xs relative z-10 border-t-8 border-yellow-400">
+                                    <p class="text-xs font-bold text-gray-400 mb-2 tracking-widest">CONTOH LABEL</p>
+                                    <div class="border-b-2 border-gray-900 pb-2 mb-4">
+                                        <span class="text-4xl font-extrabold text-gray-900 block">KP.01</span>
+                                    </div>
+                                    <p class="text-sm text-gray-800 font-bold mb-1">KEPEGAWAIAN</p>
+                                    <p class="text-xs text-gray-500">Penerimaan Pegawai 2024</p>
+                                </div>
+                                <p class="text-gray-400 text-sm font-medium relative z-10">Visualisasi Tab Folder Map Gantung</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: ALIH MEDIA -->
+                    <div x-show="activeTab === 'alihmedia'" x-transition.opacity.duration.500ms style="display: none;">
+                        <h3 class="text-3xl font-bold text-gray-900 border-b pb-6 mb-8">Prosedur Alih Media (Digitasi)</h3>
+                        
+                        <div class="bg-yellow-50 border-l-8 border-yellow-400 p-6 mb-10 rounded-r-xl shadow-sm">
+                            <div class="flex gap-4 items-start">
+                                <i class="fa-solid fa-triangle-exclamation text-3xl text-yellow-600 mt-1"></i>
+                                <div>
+                                    <h4 class="font-bold text-yellow-900 text-lg">PENTING</h4>
+                                    <p class="text-sm text-yellow-800 mt-1 leading-relaxed">
+                                        Alih media tanpa <strong>Berita Acara</strong> dan <strong>Autentikasi</strong> dianggap sebagai scan biasa (alat bantu) dan tidak memiliki kekuatan pembuktian penuh di mata hukum.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <div class="p-6 bg-white rounded-2xl border border-gray-200 text-center hover:border-ojkRed hover:shadow-xl transition group">
+                                <div class="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center text-2xl text-gray-400 group-hover:bg-ojkRed group-hover:text-white transition mb-4">
+                                    <i class="fa-solid fa-file-invoice"></i>
+                                </div>
+                                <h4 class="font-bold text-gray-900 mb-2">1. Persiapan</h4>
+                                <p class="text-xs text-gray-500 leading-relaxed">Buka jilid, bersihkan dokumen, urutkan sesuai daftar.</p>
+                            </div>
+                            <div class="p-6 bg-white rounded-2xl border border-gray-200 text-center hover:border-ojkRed hover:shadow-xl transition group">
+                                <div class="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center text-2xl text-gray-400 group-hover:bg-ojkRed group-hover:text-white transition mb-4">
+                                    <i class="fa-solid fa-scanner-gun"></i>
+                                </div>
+                                <h4 class="font-bold text-gray-900 mb-2">2. Scanning</h4>
+                                <p class="text-xs text-gray-500 leading-relaxed">300 DPI, PDF/A, Color. Gunakan flatbed untuk arsip rapuh.</p>
+                            </div>
+                            <div class="p-6 bg-white rounded-2xl border border-gray-200 text-center hover:border-ojkRed hover:shadow-xl transition group">
+                                <div class="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center text-2xl text-gray-400 group-hover:bg-ojkRed group-hover:text-white transition mb-4">
+                                    <i class="fa-solid fa-eye"></i>
+                                </div>
+                                <h4 class="font-bold text-gray-900 mb-2">3. QC</h4>
+                                <p class="text-xs text-gray-500 leading-relaxed">Cek keterbacaan, crop, dan orientasi halaman satu per satu.</p>
+                            </div>
+                            <div class="p-6 bg-white rounded-2xl border border-gray-200 text-center hover:border-ojkRed hover:shadow-xl transition group">
+                                <div class="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center text-2xl text-gray-400 group-hover:bg-ojkRed group-hover:text-white transition mb-4">
+                                    <i class="fa-solid fa-signature"></i>
+                                </div>
+                                <h4 class="font-bold text-gray-900 mb-2">4. Autentikasi</h4>
+                                <p class="text-xs text-gray-500 leading-relaxed">Tanda tangan Berita Acara oleh Pimpinan Unit Kerja.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 5: PENYUSUTAN -->
+                    <div x-show="activeTab === 'penyusutan'" x-transition.opacity.duration.500ms style="display: none;">
+                        <h3 class="text-3xl font-bold text-gray-900 border-b pb-6 mb-8">Penyusutan Arsip</h3>
+                        <p class="text-gray-600 mb-8 text-lg">Kegiatan pengurangan jumlah arsip melalui 3 cara:</p>
+                        
+                        <div class="grid gap-6">
+                            <div class="flex gap-6 p-6 border-2 border-gray-100 rounded-2xl hover:border-blue-200 hover:bg-blue-50/50 transition">
+                                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl shrink-0"><i class="fa-solid fa-dolly"></i></div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-gray-900 mb-2">Pemindahan</h4>
+                                    <p class="text-sm text-gray-600 leading-relaxed">Memindahkan arsip inaktif dari Unit Pengolah ke Record Center (UK III). Wajib ada Daftar Arsip Pindahan dan Berita Acara.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-6 p-6 border-2 border-gray-100 rounded-2xl hover:border-red-200 hover:bg-red-50/50 transition">
+                                <div class="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center text-3xl shrink-0"><i class="fa-solid fa-fire-burner"></i></div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-gray-900 mb-2">Pemusnahan</h4>
+                                    <p class="text-sm text-gray-600 leading-relaxed">Menghancurkan fisik arsip yang habis retensinya dan berstatus "MUSNAH". Perlu penilaian panitia, persetujuan ANRI, dan penetapan Pimpinan.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-6 p-6 border-2 border-gray-100 rounded-2xl hover:border-green-200 hover:bg-green-50/50 transition">
+                                <div class="w-16 h-16 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-3xl shrink-0"><i class="fa-solid fa-landmark"></i></div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-gray-900 mb-2">Penyerahan</h4>
+                                    <p class="text-sm text-gray-600 leading-relaxed">Menyerahkan Arsip Statis (bernilai sejarah) ke ANRI. Dilakukan terpusat oleh UK I setelah verifikasi ketat.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: VISUAL TIMELINE ALUR (SOP) -->
+    <section id="timeline-sop" class="py-24 bg-white scroll-mt-24" x-data="{ activeFlow: 'pemindahan' }">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900">Timeline SOP Pelayanan</h2>
+                <p class="mt-4 text-gray-600 text-lg">Visualisasi langkah kerja pelayanan kearsipan dari hulu ke hilir.</p>
+                
+                <div class="flex justify-center gap-6 mt-10">
+                    <button @click="activeFlow = 'pemindahan'" :class="activeFlow === 'pemindahan' ? 'bg-ojkRed text-white shadow-lg' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'" class="px-8 py-3 rounded-full text-base font-bold transition duration-300">
+                        Pemindahan
+                    </button>
+                    <button @click="activeFlow = 'pemusnahan'" :class="activeFlow === 'pemusnahan' ? 'bg-ojkRed text-white shadow-lg' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'" class="px-8 py-3 rounded-full text-base font-bold transition duration-300">
+                        Pemusnahan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Flow: Pemindahan -->
+            <div x-show="activeFlow === 'pemindahan'" class="timeline-container animate-fade-in pl-8 border-l-2 border-gray-200 ml-4 md:ml-0">
+                <div class="timeline-item relative pl-12 pb-16">
+                    <div class="timeline-icon absolute -left-[51px] top-0 w-12 h-12 bg-white border-4 border-ojkRed rounded-full flex items-center justify-center font-bold text-lg text-gray-700 shadow-md">1</div>
+                    <div class="bg-gray-50 p-8 rounded-3xl border border-gray-100 shadow-sm">
+                        <h4 class="text-xl font-bold text-gray-900">Seleksi (Unit Pengolah)</h4>
+                        <p class="text-gray-600 mt-2 leading-relaxed">Unit Pengolah memisahkan arsip aktif dan inaktif. Cek masa retensi di JRA untuk memastikan arsip sudah memasuki masa inaktif (biasanya 2 tahun).</p>
+                    </div>
+                </div>
+                <div class="timeline-item relative pl-12 pb-16">
+                    <div class="timeline-icon absolute -left-[51px] top-0 w-12 h-12 bg-white border-4 border-ojkRed rounded-full flex items-center justify-center font-bold text-lg text-gray-700 shadow-md">2</div>
+                    <div class="bg-gray-50 p-8 rounded-3xl border border-gray-100 shadow-sm">
+                        <h4 class="text-xl font-bold text-gray-900">Pembuatan Daftar Arsip</h4>
+                        <p class="text-gray-600 mt-2 leading-relaxed">Menyusun Daftar Arsip Pindahan dalam format Excel. Kolom wajib: No, Kode Klasifikasi, Uraian Informasi, Tahun, Jumlah, Keterangan.</p>
+                    </div>
+                </div>
+                <div class="timeline-item relative pl-12 pb-16">
+                    <div class="timeline-icon absolute -left-[51px] top-0 w-12 h-12 bg-white border-4 border-ojkRed rounded-full flex items-center justify-center font-bold text-lg text-gray-700 shadow-md">3</div>
+                    <div class="bg-gray-50 p-8 rounded-3xl border border-gray-100 shadow-sm">
+                        <h4 class="text-xl font-bold text-gray-900">Verifikasi (UK III)</h4>
+                        <p class="text-gray-600 mt-2 leading-relaxed">UK III memeriksa kesesuaian fisik arsip dengan daftar. Jika sesuai, lanjut ke tahap serah terima. Jika tidak, dikembalikan ke UP.</p>
+                    </div>
+                </div>
+                <div class="timeline-item relative pl-12">
+                    <div class="timeline-icon absolute -left-[51px] top-0 w-12 h-12 bg-ojkRed text-white rounded-full flex items-center justify-center font-bold text-lg shadow-lg"><i class="fa-solid fa-check"></i></div>
+                    <div class="bg-green-50 p-8 rounded-3xl border border-green-100 shadow-sm">
+                        <h4 class="text-xl font-bold text-green-900">Serah Terima (BA)</h4>
+                        <p class="text-green-800 mt-2 leading-relaxed">Penandatanganan Berita Acara Pemindahan oleh Pimpinan UP dan Pimpinan UK III. Arsip fisik masuk ke Record Center KOYK.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flow: Pemusnahan -->
+            <div x-show="activeFlow === 'pemusnahan'" class="timeline-container animate-fade-in pl-8 border-l-2 border-gray-200 ml-4 md:ml-0" style="display: none;">
+                <div class="timeline-item relative pl-12 pb-16">
+                    <div class="timeline-icon absolute -left-[51px] top-0 w-12 h-12 bg-white border-4 border-red-500 rounded-full flex items-center justify-center font-bold text-lg text-red-600 shadow-md">1</div>
+                    <div class="bg-red-50 p-8 rounded-3xl border border-red-100 shadow-sm">
+                        <h4 class="text-xl font-bold text-gray-900">Penyeleksian</h4>
+                        <p class="text-gray-600 mt-2 leading-relaxed">Memilih arsip yang retensi inaktifnya sudah habis sesuai JRA dan berstatus akhir "MUSNAH".</p>
+                    </div>
+                </div>
+                <div class="timeline-item relative pl-12 pb-16">
+                    <div class="timeline-icon absolute -left-[51px] top-0 w-12 h-12 bg-white border-4 border-red-500 rounded-full flex items-center justify-center font-bold text-lg text-red-600 shadow-md">2</div>
+                    <div class="bg-red-50 p-8 rounded-3xl border border-red-100 shadow-sm">
+                        <h4 class="text-xl font-bold text-gray-900">Penilaian Panitia</h4>
+                        <p class="text-gray-600 mt-2 leading-relaxed">Rapat penilaian fisik & administrasi oleh Panitia Penilai Arsip (PPA) yang terdiri dari UK, Unit Pengolah, Hukum, dan Pengawasan.</p>
+                    </div>
+                </div>
+                <div class="timeline-item relative pl-12 pb-16">
+                    <div class="timeline-icon absolute -left-[51px] top-0 w-12 h-12 bg-white border-4 border-red-500 rounded-full flex items-center justify-center font-bold text-lg text-red-600 shadow-md">3</div>
+                    <div class="bg-red-50 p-8 rounded-3xl border border-red-100 shadow-sm">
+                        <h4 class="text-xl font-bold text-gray-900">Persetujuan ANRI</h4>
+                        <p class="text-gray-600 mt-2 leading-relaxed">Mengajukan permohonan persetujuan pemusnahan ke Kepala ANRI (via UK I Pusat).</p>
+                    </div>
+                </div>
+                <div class="timeline-item relative pl-12">
+                    <div class="timeline-icon absolute -left-[51px] top-0 w-12 h-12 bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-lg shadow-lg"><i class="fa-solid fa-gavel"></i></div>
+                    <div class="bg-gray-900 p-8 rounded-3xl border border-gray-800 text-white shadow-xl">
+                        <h4 class="text-xl font-bold">Eksekusi Fisik</h4>
+                        <p class="text-gray-400 mt-2 leading-relaxed">Penetapan SK Pemusnahan. Penghancuran fisik total (dicacah/lebur) disaksikan saksi hukum & audit. Penandatanganan BA Pemusnahan.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: MODUL PEMBENAHAN ARSIP (DARK MODE) -->
+    <section id="pembenahan" class="py-24 bg-ojkDark text-white relative overflow-hidden scroll-mt-24">
+        <div class="absolute right-0 top-0 w-[800px] h-[800px] bg-ojkRed opacity-10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="max-w-[90%] mx-auto px-6 relative z-10">
+            <div class="mb-20">
+                <span class="text-ojkRed bg-white/10 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border border-white/20">Panduan Khusus</span>
+                <h2 class="text-5xl font-bold mt-6 mb-6">Pembenahan Arsip Inaktif (Kacau)</h2>
+                <p class="text-gray-400 text-xl max-w-3xl leading-relaxed">Metode sistematis menangani tumpukan arsip <i>backlog</i> agar kembali tertata dan dapat ditemukan kembali (retrieval).</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white/5 p-10 rounded-[2rem] border border-white/10 hover:bg-white/10 transition duration-300 group">
+                    <div class="text-5xl font-bold text-white/20 mb-6 group-hover:text-ojkRed transition">01</div>
+                    <h4 class="text-2xl font-bold mb-3">Survey & Identifikasi</h4>
+                    <p class="text-sm text-gray-400 leading-relaxed">Amati kondisi fisik, volume, dan kurun waktu arsip. Tentukan strategi pembenahan dan kebutuhan sarana (boks, map, rak).</p>
+                </div>
+                <div class="bg-white/5 p-10 rounded-[2rem] border border-white/10 hover:bg-white/10 transition duration-300 group">
+                    <div class="text-5xl font-bold text-white/20 mb-6 group-hover:text-ojkRed transition">02</div>
+                    <h4 class="text-2xl font-bold mb-3">Pemilahan Awal</h4>
+                    <p class="text-sm text-gray-400 leading-relaxed">Pisahkan antara arsip (dokumen resmi), non-arsip (amplop, formulir kosong, koran), dan duplikasi. Buang material perusak (klip besi berkarat).</p>
+                </div>
+                <div class="bg-white/5 p-10 rounded-[2rem] border border-white/10 hover:bg-white/10 transition duration-300 group">
+                    <div class="text-5xl font-bold text-white/20 mb-6 group-hover:text-ojkRed transition">03</div>
+                    <h4 class="text-2xl font-bold mb-3">Pengelompokan</h4>
+                    <p class="text-sm text-gray-400 leading-relaxed">Kumpulkan arsip berdasarkan Kesamaan Fungsi/Masalah (Series) atau berdasarkan Struktur Organisasi penciptanya (Provenance).</p>
+                </div>
+                <div class="bg-white/5 p-10 rounded-[2rem] border border-white/10 hover:bg-white/10 transition duration-300 group">
+                    <div class="text-5xl font-bold text-white/20 mb-6 group-hover:text-ojkRed transition">04</div>
+                    <h4 class="text-2xl font-bold mb-3">Pendeskripsian</h4>
+                    <p class="text-sm text-gray-400 leading-relaxed">Catat data arsip ke dalam Kartu Deskripsi (Kode, Uraian Informasi, Tahun, Tingkat Perkembangan). Ini adalah kunci penemuan kembali.</p>
+                </div>
+                <div class="bg-white/5 p-10 rounded-[2rem] border border-white/10 hover:bg-white/10 transition duration-300 group">
+                    <div class="text-5xl font-bold text-white/20 mb-6 group-hover:text-ojkRed transition">05</div>
+                    <h4 class="text-2xl font-bold mb-3">Manuver Kartu & Fisik</h4>
+                    <p class="text-sm text-gray-400 leading-relaxed">Susun kartu deskripsi secara sistematis sesuai skema klasifikasi. Susun fisik arsip mengikuti urutan kartu tersebut.</p>
+                </div>
+                <div class="bg-white/5 p-10 rounded-[2rem] border border-white/10 hover:bg-white/10 transition duration-300 group">
+                    <div class="text-5xl font-bold text-white/20 mb-6 group-hover:text-ojkRed transition">06</div>
+                    <h4 class="text-2xl font-bold mb-3">Simpan & Daftar</h4>
+                    <p class="text-sm text-gray-400 leading-relaxed">Masukkan ke boks arsip, beri label nomor boks. Ketik hasil manuver menjadi <strong>Daftar Pertelaan Arsip (DPA)</strong>.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: SIMULASI RETENSI -->
+    <section id="simulasi" class="py-24 bg-gray-50 border-t border-gray-200 scroll-mt-24">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Cek Jadwal Retensi Arsip</h2>
+            <p class="text-gray-600 mb-10">Alat bantu simulasi untuk menentukan kapan arsip dapat dimusnahkan.</p>
+            
+            <div class="bg-white p-10 rounded-[2.5rem] shadow-xl border border-gray-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 text-left">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Tahun Arsip Dibuat</label>
+                        <input x-model="retensiYear" type="number" placeholder="Contoh: 2022" class="w-full px-5 py-4 rounded-xl border border-gray-300 focus:ring-4 focus:ring-ojkRed/10 focus:border-ojkRed outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Jenis / Retensi JRA</label>
+                        <select id="retensiPeriod" class="w-full px-5 py-4 rounded-xl border border-gray-300 focus:ring-4 focus:ring-ojkRed/10 focus:border-ojkRed outline-none transition bg-white">
+                            <option value="2">Administratif (2 Tahun)</option>
+                            <option value="5">Keuangan (10 Tahun)</option>
+                            <option value="10">SDM / Kasus (10 Tahun)</option>
+                            <option value="dinilai">Substantif (Dinilai Kembali)</option>
+                            <option value="permanen">Vital / Statis (Permanen)</option>
+                        </select>
+                    </div>
+                </div>
+                <button @click="calculateRetention()" class="w-full py-4 bg-gray-900 text-white font-bold rounded-xl hover:bg-gray-800 transition shadow-lg">Hitung Status</button>
+                
+                <!-- Result -->
+                <div x-show="retensiResult" x-transition class="mt-8 p-6 bg-green-50 border border-green-200 rounded-2xl text-center">
+                    <h4 class="text-xl font-bold text-green-800" x-text="retensiResult.status"></h4>
+                    <p class="text-green-700 mt-1" x-text="retensiResult.desc"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 7: KIT & UNDUH -->
+    <section id="kit-template" class="py-24 bg-white border-t border-gray-200 scroll-mt-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900">Kit Administrasi Kearsipan</h2>
+                <p class="mt-4 text-gray-600">Unduh template standar OJK (Format Google Drive/Docs).</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Dropdown 1 -->
+                <div x-data="{ open: false }" class="relative">
+                    <button @click="open = !open" class="w-full bg-white p-8 rounded-2xl border border-gray-200 shadow-sm hover:border-ojkRed transition text-left flex justify-between items-center group">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-file-pen"></i></div>
+                            <span class="font-bold text-gray-800 text-lg">Penciptaan</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-gray-400 group-hover:text-blue-600 transition" :class="{'rotate-180': open}"></i>
+                    </button>
+                    <div x-show="open" @click.away="open = false" x-collapse class="mt-3 bg-gray-50 border border-gray-100 rounded-xl overflow-hidden">
+                        <a href="#" class="block px-8 py-4 hover:bg-white text-gray-700 border-b border-gray-100">Template Kartu Kendali</a>
+                        <a href="#" class="block px-8 py-4 hover:bg-white text-gray-700">Lembar Disposisi</a>
+                    </div>
+                </div>
+                <!-- Dropdown 2 -->
+                <div x-data="{ open: false }" class="relative">
+                    <button @click="open = !open" class="w-full bg-white p-8 rounded-2xl border border-gray-200 shadow-sm hover:border-ojkRed transition text-left flex justify-between items-center group">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-folder-tree"></i></div>
+                            <span class="font-bold text-gray-800 text-lg">Pemberkasan</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-gray-400 group-hover:text-green-600 transition" :class="{'rotate-180': open}"></i>
+                    </button>
+                    <div x-show="open" @click.away="open = false" x-collapse class="mt-3 bg-gray-50 border border-gray-100 rounded-xl overflow-hidden">
+                        <a href="#" class="block px-8 py-4 hover:bg-white text-gray-700 border-b border-gray-100">Daftar Berkas Aktif</a>
+                        <a href="#" class="block px-8 py-4 hover:bg-white text-gray-700">Label Folder</a>
+                    </div>
+                </div>
+                <!-- Dropdown 3 -->
+                <div x-data="{ open: false }" class="relative">
+                    <button @click="open = !open" class="w-full bg-white p-8 rounded-2xl border border-gray-200 shadow-sm hover:border-ojkRed transition text-left flex justify-between items-center group">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-file-contract"></i></div>
+                            <span class="font-bold text-gray-800 text-lg">Penyusutan</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-gray-400 group-hover:text-red-600 transition" :class="{'rotate-180': open}"></i>
+                    </button>
+                    <div x-show="open" @click.away="open = false" x-collapse class="mt-3 bg-gray-50 border border-gray-100 rounded-xl overflow-hidden">
+                        <a href="#" class="block px-8 py-4 hover:bg-white text-gray-700 border-b border-gray-100">BA Pemindahan Arsip</a>
+                        <a href="#" class="block px-8 py-4 hover:bg-white text-gray-700">Daftar Arsip Usul Musnah</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-ojkDark text-white pt-24 pb-12 border-t border-gray-800">
+        <div class="max-w-[90%] mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-16 mb-20">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-12 h-12 bg-ojkRed rounded-xl flex items-center justify-center text-white font-bold text-lg">OJK</div>
+                        <div>
+                            <span class="block font-bold text-2xl">Kantor OJK D.I. Yogyakarta</span>
+                            <span class="text-sm text-gray-400 uppercase tracking-widest">Unit Kearsipan III</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-base leading-relaxed max-w-md mb-8">
+                        Mengatur, Mengawasi, Melindungi. <br>
+                        Mewujudkan tertib arsip sebagai pilar akuntabilitas dan memori kolektif lembaga.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-white mb-8 border-l-4 border-ojkRed pl-4 text-lg">Kontak</h4>
+                    <ul class="space-y-6 text-sm text-gray-400">
+                        <li class="flex items-start gap-4">
+                            <i class="fa-solid fa-location-dot mt-1 text-ojkRed text-lg"></i>
+                            <span>Jl. Jend. Sudirman No. 22<br>Gowongan, Jetis<br>Yogyakarta 55233</span>
+                        </li>
+                        <li class="flex items-center gap-4">
+                            <i class="fa-solid fa-phone text-ojkRed text-lg"></i>
+                            <span>(0274) 123 4567</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-white mb-8 border-l-4 border-ojkRed pl-4 text-lg">Tautan Internal</h4>
+                    <ul class="space-y-4 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-white hover:pl-2 transition-all block">SIKD OJK</a></li>
+                        <li><a href="#" class="hover:text-white hover:pl-2 transition-all block">Portal KOSG (Semarang)</a></li>
+                        <li><a href="#" class="hover:text-white hover:pl-2 transition-all block">Website Utama OJK</a></li>
+                        <li><a href="#" class="hover:text-white hover:pl-2 transition-all block">Jadwal Retensi Arsip (JRA)</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
+                <p>&copy; 2025 Unit Kearsipan III - Kantor OJK DIY. Hak Cipta Dilindungi.</p>
+                <div class="mt-4 md:mt-0 space-x-6">
+                    <a href="#" class="hover:text-white">Privacy Policy</a>
+                    <a href="#" class="hover:text-white">Terms of Use</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
