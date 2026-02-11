@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Informasi & Pedoman Kearsipan Terpadu - KOYK Enterprise</title>
+    <meta name="description" content="Sistem Informasi & Pedoman Kearsipan Terpadu Otoritas Jasa Keuangan DIY">
+    <title></title>
+    
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" href="https://www.ojk.go.id/Style%20Library/ojk/img/logo-ojk.png">
     
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -20,14 +24,27 @@
             return {
                 loading: true,
                 mobileMenu: false,
-                glosariumModal: false, // Default hidden
+                glosariumModal: false, 
                 activeTab: 'penciptaan',
                 activeFlow: 'pemindahan',
                 searchQuery: '',
                 
+                // Preview State
+                previewModal: false,
+                previewTitle: '',
+                previewType: '',
+                
                 // Init Animation
                 init() {
-                    setTimeout(() => { this.loading = false; }, 2500);
+                    // Simulasi loading resources
+                    setTimeout(() => { this.loading = false; }, 2000);
+                },
+
+                // Fungsi helper untuk membuka preview
+                openPreview(title, type) {
+                    this.previewTitle = title;
+                    this.previewType = type;
+                    this.previewModal = true;
                 },
 
                 // DATABASE GLOSARIUM LENGKAP (39 ISTILAH SEDK)
@@ -83,7 +100,7 @@
 
                 // Kalkulator Retensi Logic
                 retensiYear: '',
-                retensiResult: null,
+                retensiResult: null, 
                 calculateRetention() {
                     const year = parseInt(this.retensiYear);
                     const period = document.getElementById('retensiPeriod').value;
@@ -105,6 +122,7 @@
     <!-- Alpine.js (CDN) -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
+    <!-- Tailwind Configuration -->
     <script>
         tailwind.config = {
             theme: {
@@ -171,7 +189,7 @@
             <div class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 w-20 h-2 bg-gray-200 rounded-full blur-md opacity-50"></div>
         </div>
         <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight mt-6 animate-pulse">Memuat Portal Kearsipan...</h1>
-        <p class="text-gray-500 font-medium text-sm mt-3 tracking-widest uppercase">Kantor OJK D.I. Yogyakarta</p>
+        <p class="text-gray-500 font-medium text-sm mt-3 tracking-widest uppercase">KOJK D.I. Yogyakarta</p>
     </div>
 
     <!-- GLOSARIUM MODAL (HIDDEN BY DEFAULT) -->
@@ -237,8 +255,8 @@
                         OJK
                     </div>
                     <div class="flex flex-col">
-                        <span class="font-bold text-xl text-gray-900 leading-none tracking-tight">Website Arsip</span>
-                        <span class="text-[10px] text-ojkRed font-extrabold tracking-[0.2em] uppercase mt-1">Kantor OJK Daerah Istimewa Yogyakarta</span>
+                        <span class="font-bold text-xl text-gray-900 leading-none tracking-tight">Website</span>
+                        <span class="text-[10px] text-ojkRed font-extrabold tracking-[0.2em] uppercase mt-1">Haloo Arsip</span>
                     </div>
                 </div>
 
@@ -296,8 +314,8 @@
                 Implementasi SEDK.02 Tahun 2022
             </div>
             <h1 class="text-6xl md:text-8xl font-extrabold text-gray-900 mb-8 leading-tight tracking-tight">
-                Pusat Tata Kelola <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-br from-ojkRed to-red-900">Arsip Terintegrasi</span>
+                Informasi Pengelolaan<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-br from-ojkRed to-red-900">Arsip Aktif & Inaktif</span>
             </h1>
             <p class="text-xl md:text-2xl text-gray-500 mb-14 max-w-4xl mx-auto leading-relaxed font-light">
                 Platform referensi resmi bagi Insan OJK DIY. Menjamin ketersediaan arsip yang autentik dan terpercaya melalui prosedur <strong>Penciptaan, Penggunaan, Pemeliharaan,</strong> hingga <strong>Penyusutan</strong> yang terstandarisasi.
@@ -459,23 +477,23 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
                 <!-- Sidebar Navigation -->
                 <div class="lg:col-span-3 space-y-3">
-                    <button @click="activeTab = 'penciptaan'" :class="activeTab === 'penciptaan' ? 'bg-ojkRed text-white shadow-xl translate-x-2' : 'bg-white text-gray-600 hover:bg-gray-100'" class="w-full text-left px-8 py-5 rounded-2xl font-bold transition-all duration-300 flex justify-between items-center group">
+                    <button @click="activeTab = 'penciptaan'" :class="activeTab === 'penciptaan' ? 'bg-ojkRed text-white shadow-xl translate-x-2' : 'bg-white text-gray-600 hover:bg-white/80'" class="w-full text-left px-8 py-5 rounded-2xl font-bold transition-all duration-300 flex justify-between items-center group">
                         <span>1. Penciptaan</span>
                         <i class="fa-solid fa-pen-nib opacity-50 group-hover:opacity-100"></i>
                     </button>
-                    <button @click="activeTab = 'penggunaan'" :class="activeTab === 'penggunaan' ? 'bg-ojkRed text-white shadow-xl translate-x-2' : 'bg-white text-gray-600 hover:bg-gray-100'" class="w-full text-left px-8 py-5 rounded-2xl font-bold transition-all duration-300 flex justify-between items-center group">
+                    <button @click="activeTab = 'penggunaan'" :class="activeTab === 'penggunaan' ? 'bg-ojkRed text-white shadow-xl translate-x-2' : 'bg-white text-gray-600 hover:bg-white/80'" class="w-full text-left px-8 py-5 rounded-2xl font-bold transition-all duration-300 flex justify-between items-center group">
                         <span>2. Penggunaan</span>
                         <i class="fa-solid fa-hand-holding opacity-50 group-hover:opacity-100"></i>
                     </button>
-                    <button @click="activeTab = 'pemberkasan'" :class="activeTab === 'pemberkasan' ? 'bg-ojkRed text-white shadow-xl translate-x-2' : 'bg-white text-gray-600 hover:bg-gray-100'" class="w-full text-left px-8 py-5 rounded-2xl font-bold transition-all duration-300 flex justify-between items-center group">
+                    <button @click="activeTab = 'pemberkasan'" :class="activeTab === 'pemberkasan' ? 'bg-ojkRed text-white shadow-xl translate-x-2' : 'bg-white text-gray-600 hover:bg-white/80'" class="w-full text-left px-8 py-5 rounded-2xl font-bold transition-all duration-300 flex justify-between items-center group">
                         <span>3. Pemberkasan</span>
                         <i class="fa-solid fa-folder-tree opacity-50 group-hover:opacity-100"></i>
                     </button>
-                    <button @click="activeTab = 'alihmedia'" :class="activeTab === 'alihmedia' ? 'bg-ojkRed text-white shadow-xl translate-x-2' : 'bg-white text-gray-600 hover:bg-gray-100'" class="w-full text-left px-8 py-5 rounded-2xl font-bold transition-all duration-300 flex justify-between items-center group">
+                    <button @click="activeTab = 'alihmedia'" :class="activeTab === 'alihmedia' ? 'bg-ojkRed text-white shadow-xl translate-x-2' : 'bg-white text-gray-600 hover:bg-white/80'" class="w-full text-left px-8 py-5 rounded-2xl font-bold transition-all duration-300 flex justify-between items-center group">
                         <span>4. Alih Media</span>
                         <i class="fa-solid fa-digital-ocean opacity-50 group-hover:opacity-100"></i>
                     </button>
-                    <button @click="activeTab = 'penyusutan'" :class="activeTab === 'penyusutan' ? 'bg-ojkRed text-white shadow-xl translate-x-2' : 'bg-white text-gray-600 hover:bg-gray-100'" class="w-full text-left px-8 py-5 rounded-2xl font-bold transition-all duration-300 flex justify-between items-center group">
+                    <button @click="activeTab = 'penyusutan'" :class="activeTab === 'penyusutan' ? 'bg-ojkRed text-white shadow-xl translate-x-2' : 'bg-white text-gray-600 hover:bg-white/80'" class="w-full text-left px-8 py-5 rounded-2xl font-bold transition-all duration-300 flex justify-between items-center group">
                         <span>5. Penyusutan</span>
                         <i class="fa-solid fa-trash-can opacity-50 group-hover:opacity-100"></i>
                     </button>
@@ -822,7 +840,7 @@
                         <label class="block text-sm font-bold text-gray-700 mb-2">Jenis / Retensi JRA</label>
                         <select id="retensiPeriod" class="w-full px-5 py-4 rounded-xl border border-gray-300 focus:ring-4 focus:ring-ojkRed/10 focus:border-ojkRed outline-none transition bg-white">
                             <option value="2">Administratif (2 Tahun)</option>
-                            <option value="5">Keuangan (10 Tahun)</option>
+                            <option value="5">Keuangan (5 Tahun)</option>
                             <option value="10">SDM / Kasus (10 Tahun)</option>
                             <option value="dinilai">Substantif (Dinilai Kembali)</option>
                             <option value="permanen">Vital / Statis (Permanen)</option>
@@ -833,14 +851,14 @@
                 
                 <!-- Result -->
                 <div x-show="retensiResult" x-transition class="mt-8 p-6 bg-green-50 border border-green-200 rounded-2xl text-center">
-                    <h4 class="text-xl font-bold text-green-800" x-text="retensiResult.status"></h4>
-                    <p class="text-green-700 mt-1" x-text="retensiResult.desc"></p>
+                    <h4 class="text-xl font-bold text-green-800" x-text="retensiResult ? retensiResult.status : ''"></h4>
+                    <p class="text-green-700 mt-1" x-text="retensiResult ? retensiResult.desc : ''"></p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- SECTION 7: KIT & UNDUH -->
+    <!-- SECTION 7: KIT & UNDUH (NEW PREVIEW FEATURE) -->
     <section id="kit-template" class="py-24 bg-white border-t border-gray-200 scroll-mt-24">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-16">
@@ -849,7 +867,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Dropdown 1 -->
+                <!-- Dropdown 1: Penciptaan -->
                 <div x-data="{ open: false }" class="relative">
                     <button @click="open = !open" class="w-full bg-white p-8 rounded-2xl border border-gray-200 shadow-sm hover:border-ojkRed transition text-left flex justify-between items-center group">
                         <div class="flex items-center gap-4">
@@ -858,12 +876,35 @@
                         </div>
                         <i class="fa-solid fa-chevron-down text-gray-400 group-hover:text-blue-600 transition" :class="{'rotate-180': open}"></i>
                     </button>
-                    <div x-show="open" @click.away="open = false" x-collapse class="mt-3 bg-gray-50 border border-gray-100 rounded-xl overflow-hidden">
-                        <a href="#" class="block px-8 py-4 hover:bg-white text-gray-700 border-b border-gray-100">Template Kartu Kendali</a>
-                        <a href="#" class="block px-8 py-4 hover:bg-white text-gray-700">Lembar Disposisi</a>
+                    <div x-show="open" @click.away="open = false" x-collapse class="mt-3 bg-gray-50 border border-gray-100 rounded-xl overflow-hidden shadow-lg">
+                        <!-- Item 1 -->
+                        <div class="flex justify-between items-center px-8 py-4 hover:bg-white border-b border-gray-100 transition">
+                            <span class="text-gray-700 text-sm">Template Kartu Kendali</span>
+                            <div class="flex gap-2">
+                                <button @click="openPreview('Kartu Kendali Surat', 'DOC')" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded-lg transition" title="Lihat Preview">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <a href="#" class="text-xs bg-ojkRed hover:bg-red-700 text-white px-3 py-1 rounded-lg transition" title="Unduh">
+                                    <i class="fa-solid fa-download"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Item 2 -->
+                        <div class="flex justify-between items-center px-8 py-4 hover:bg-white transition">
+                            <span class="text-gray-700 text-sm">Lembar Disposisi</span>
+                            <div class="flex gap-2">
+                                <button @click="openPreview('Lembar Disposisi', 'DOC')" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded-lg transition" title="Lihat Preview">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <a href="#" class="text-xs bg-ojkRed hover:bg-red-700 text-white px-3 py-1 rounded-lg transition" title="Unduh">
+                                    <i class="fa-solid fa-download"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <!-- Dropdown 2 -->
+
+                <!-- Dropdown 2: Pemberkasan -->
                 <div x-data="{ open: false }" class="relative">
                     <button @click="open = !open" class="w-full bg-white p-8 rounded-2xl border border-gray-200 shadow-sm hover:border-ojkRed transition text-left flex justify-between items-center group">
                         <div class="flex items-center gap-4">
@@ -872,12 +913,35 @@
                         </div>
                         <i class="fa-solid fa-chevron-down text-gray-400 group-hover:text-green-600 transition" :class="{'rotate-180': open}"></i>
                     </button>
-                    <div x-show="open" @click.away="open = false" x-collapse class="mt-3 bg-gray-50 border border-gray-100 rounded-xl overflow-hidden">
-                        <a href="#" class="block px-8 py-4 hover:bg-white text-gray-700 border-b border-gray-100">Daftar Berkas Aktif</a>
-                        <a href="#" class="block px-8 py-4 hover:bg-white text-gray-700">Label Folder</a>
+                    <div x-show="open" @click.away="open = false" x-collapse class="mt-3 bg-gray-50 border border-gray-100 rounded-xl overflow-hidden shadow-lg">
+                        <!-- Item 1 -->
+                        <div class="flex justify-between items-center px-8 py-4 hover:bg-white border-b border-gray-100 transition">
+                            <span class="text-gray-700 text-sm">Daftar Berkas Aktif</span>
+                            <div class="flex gap-2">
+                                <button @click="openPreview('Daftar Berkas Aktif', 'XLS')" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded-lg transition" title="Lihat Preview">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <a href="#" class="text-xs bg-ojkRed hover:bg-red-700 text-white px-3 py-1 rounded-lg transition" title="Unduh">
+                                    <i class="fa-solid fa-download"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Item 2 -->
+                        <div class="flex justify-between items-center px-8 py-4 hover:bg-white transition">
+                            <span class="text-gray-700 text-sm">Label Folder</span>
+                            <div class="flex gap-2">
+                                <button @click="openPreview('Label Folder Arsip', 'DOC')" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded-lg transition" title="Lihat Preview">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <a href="#" class="text-xs bg-ojkRed hover:bg-red-700 text-white px-3 py-1 rounded-lg transition" title="Unduh">
+                                    <i class="fa-solid fa-download"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <!-- Dropdown 3 -->
+
+                <!-- Dropdown 3: Penyusutan -->
                 <div x-data="{ open: false }" class="relative">
                     <button @click="open = !open" class="w-full bg-white p-8 rounded-2xl border border-gray-200 shadow-sm hover:border-ojkRed transition text-left flex justify-between items-center group">
                         <div class="flex items-center gap-4">
@@ -886,14 +950,86 @@
                         </div>
                         <i class="fa-solid fa-chevron-down text-gray-400 group-hover:text-red-600 transition" :class="{'rotate-180': open}"></i>
                     </button>
-                    <div x-show="open" @click.away="open = false" x-collapse class="mt-3 bg-gray-50 border border-gray-100 rounded-xl overflow-hidden">
-                        <a href="#" class="block px-8 py-4 hover:bg-white text-gray-700 border-b border-gray-100">BA Pemindahan Arsip</a>
-                        <a href="#" class="block px-8 py-4 hover:bg-white text-gray-700">Daftar Arsip Usul Musnah</a>
+                    <div x-show="open" @click.away="open = false" x-collapse class="mt-3 bg-gray-50 border border-gray-100 rounded-xl overflow-hidden shadow-lg">
+                        <!-- Item 1 -->
+                        <div class="flex justify-between items-center px-8 py-4 hover:bg-white border-b border-gray-100 transition">
+                            <span class="text-gray-700 text-sm">BA Pemindahan Arsip</span>
+                            <div class="flex gap-2">
+                                <button @click="openPreview('Berita Acara Pemindahan', 'DOC')" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded-lg transition" title="Lihat Preview">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <a href="#" class="text-xs bg-ojkRed hover:bg-red-700 text-white px-3 py-1 rounded-lg transition" title="Unduh">
+                                    <i class="fa-solid fa-download"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Item 2 -->
+                        <div class="flex justify-between items-center px-8 py-4 hover:bg-white transition">
+                            <span class="text-gray-700 text-sm">Daftar Arsip Usul Musnah</span>
+                            <div class="flex gap-2">
+                                <button @click="openPreview('Daftar Arsip Usul Musnah', 'XLS')" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded-lg transition" title="Lihat Preview">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <a href="#" class="text-xs bg-ojkRed hover:bg-red-700 text-white px-3 py-1 rounded-lg transition" title="Unduh">
+                                    <i class="fa-solid fa-download"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- 2. PREVIEW MODAL (Template Preview) -->
+    <div x-show="previewModal" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="previewModal = false" x-transition.opacity></div>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl w-full" x-transition.scale.origin.bottom>
+                <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-gray-900" x-text="'Preview: ' + previewTitle"></h3>
+                    <button @click="previewModal = false" class="text-gray-400 hover:text-gray-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+                </div>
+                <div class="p-10 bg-gray-100 flex justify-center h-96 overflow-y-auto">
+                    <!-- DUMMY PAPER PREVIEW -->
+                    <div class="bg-white shadow-lg w-full max-w-xl h-[600px] p-8 text-[10px] text-gray-800 font-serif border border-gray-300">
+                        <div class="text-center font-bold text-sm mb-4 border-b-2 border-black pb-2">
+                            OTORITAS JASA KEUANGAN<br>KANTOR DAERAH ISTIMEWA YOGYAKARTA
+                        </div>
+                        <div class="text-center font-bold mb-6" x-text="previewTitle ? previewTitle.toUpperCase() : ''"></div>
+                        <div class="space-y-4">
+                            <p>Pada hari ini ........ tanggal ........ bulan ........ tahun ........, kami yang bertanda tangan di bawah ini:</p>
+                            <div class="pl-4">
+                                <p>1. Nama: ........................................... (Pihak Pertama)</p>
+                                <p>2. Nama: ........................................... (Pihak Kedua)</p>
+                            </div>
+                            <p class="text-gray-400 italic">[Isi dokumen template standar OJK sesuai SEDK.02...]</p>
+                            <div class="h-4 bg-gray-100 rounded w-full"></div>
+                            <div class="h-4 bg-gray-100 rounded w-full"></div>
+                            <div class="h-4 bg-gray-100 rounded w-3/4"></div>
+                            
+                            <div class="flex justify-between mt-12 px-8">
+                                <div class="text-center">
+                                    <p>Pihak Pertama</p>
+                                    <br><br><br>
+                                    <p>(...................)</p>
+                                </div>
+                                <div class="text-center">
+                                    <p>Pihak Kedua</p>
+                                    <br><br><br>
+                                    <p>(...................)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 flex justify-end gap-3">
+                    <button @click="previewModal = false" class="px-4 py-2 bg-white border border-gray-300 rounded text-sm font-medium hover:bg-gray-50">Tutup</button>
+                    <button class="px-4 py-2 bg-ojkDark text-white rounded text-sm font-medium hover:bg-black"><i class="fa-solid fa-download mr-2"></i> Unduh Sekarang</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- FOOTER -->
     <footer class="bg-ojkDark text-white pt-24 pb-12 border-t border-gray-800">
@@ -903,7 +1039,7 @@
                     <div class="flex items-center gap-4 mb-8">
                         <div class="w-12 h-12 bg-ojkRed rounded-xl flex items-center justify-center text-white font-bold text-lg">OJK</div>
                         <div>
-                            <span class="block font-bold text-2xl">Kantor OJK D.I. Yogyakarta</span>
+                            <span class="block font-bold text-2xl">KOJK D.I. Yogyakarta</span>
                             <span class="text-sm text-gray-400 uppercase tracking-widest">Unit Kearsipan III</span>
                         </div>
                     </div>
